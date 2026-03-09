@@ -53,4 +53,68 @@ class NetworkHandler {
       throw Exception("something went wrong");
     }
   }
+
+  static Future<List<ArticleData>> searchArticles(
+    String query, {
+    String? sortBy,
+    String? language,
+  }) async {
+    try {
+      Map<String, dynamic> queryParameters = {
+        "apiKey": ApiConstants.apiKey,
+        "q": query,
+        if (sortBy != null) "sortBy": sortBy,
+        if (language != null) "language": language,
+      };
+      final response = await http.get(
+        Uri.https(ApiConstants.baseURL, EndPoints.allArticles, queryParameters),
+      );
+      List<ArticleData> articles = [];
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        for (var element in data["articles"]) {
+          ArticleData articleData = ArticleData.fromJson(element);
+          articles.add(articleData);
+        }
+        return articles;
+      } else {
+        throw Exception("something went wrong");
+      }
+    } catch (error) {
+      throw Exception("something went wrong");
+    }
+  }
+
+  static Future<List<ArticleData>> getTopHeadlines({
+    String? category,
+    String? country,
+  }) async {
+    try {
+      Map<String, dynamic> queryParameters = {
+        "apiKey": ApiConstants.apiKey,
+        if (category != null) "category": category,
+        if (country != null) "country": country,
+      };
+      final response = await http.get(
+        Uri.https(
+          ApiConstants.baseURL,
+          EndPoints.topHeadlines,
+          queryParameters,
+        ),
+      );
+      List<ArticleData> articles = [];
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        for (var element in data["articles"]) {
+          ArticleData articleData = ArticleData.fromJson(element);
+          articles.add(articleData);
+        }
+        return articles;
+      } else {
+        throw Exception("something went wrong");
+      }
+    } catch (error) {
+      throw Exception("something went wrong");
+    }
+  }
 }

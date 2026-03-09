@@ -21,15 +21,15 @@ class ArticleData {
   });
   factory ArticleData.fromJson(Map<String, dynamic> json) {
     return ArticleData(
-      title: json["title"],
-      description: json["description"],
-      url: json["url"],
-      urlToImage: json["urlToImage"],
-      publishedAt: json["publishedAt"],
-      content: json["content"],
+      title: json["title"] ?? "",
+      description: json["description"] ?? "",
+      url: json["url"] ?? "",
+      urlToImage: json["urlToImage"] ?? "",
+      publishedAt: json["publishedAt"] ?? "",
+      content: json["content"] ?? "",
       author: json["author"],
-      sourceName: json["source"]["name"],
-      sourceId: json["source"]["id"],
+      sourceName: json["source"]?["name"] ?? "",
+      sourceId: json["source"]?["id"] ?? "",
     );
   }
 }

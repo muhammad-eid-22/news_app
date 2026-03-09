@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/moduls/home/cubit/home_cubit.dart';
 import 'package:news_app/moduls/home/view/widgets/category_card.dart';
 import 'package:news_app/moduls/home/view/widgets/custom_drawer_widget.dart';
-import 'package:provider/provider.dart';
+import 'package:news_app/moduls/search/cubit/search_cubit.dart';
+import 'package:news_app/moduls/search/view/search_screen.dart';
 
 import '../../../core/gen/assets.gen.dart';
 import '../../../models/category_data_model.dart';
-import '../view_model/home_view_model/home_view_model.dart';
+import '../sources/cubit/sources_cubit.dart';
 import 'loaded_news_data_view.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,15 +61,33 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return ChangeNotifierProvider(
-      create: (context) => HomeViewModelProvider(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => HomeCubit()),
+        BlocProvider(create: (context) => SourcesCubit()),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(
             SelectedCategory == null ? "News App" : SelectedCategory!.name,
             style: theme.textTheme.titleLarge,
           ),
-          actions: [Icon(Icons.search)],
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                      create: (context) => SearchCubit(),
+                      child: const SearchScreen(),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         drawer: CustomDrawerWidget(onTap: _goToHome),
         body: SelectedCategory == null
